@@ -1,9 +1,13 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#080d18">
-  <title>BEEKAY Smart Audio Monitor</title>  <style>
+  <meta name="description" content="BEEKAY Smart Audio Monitor - a consent-based audio learning prototype.">
+  <title>BEEKAY Smart Audio Monitor</title>
+
+  <style>
     :root {
       --bg: #080d18;
       --panel: #111a2b;
@@ -335,138 +339,173 @@
         font-size: 10px;
       }
     }
-  </style></head><body>
-  <main class="container"><header>
-  <div class="logo">BK</div>
+  </style>
+</head>
 
-  <div>
-    <h1>BEEKAY</h1>
-    <p>SMART AUDIO MONITOR</p>
-  </div>
+<body>
+  <main class="container">
 
-  <span class="badge">PROTOTYPE</span>
-</header>
+    <header>
+      <div class="logo">BK</div>
 
-<section class="welcome">
-  <h2>Your room,<br><span>connected securely.</span></h2>
-  <p>
-    A prototype for exploring remote audio connections
-    between compatible devices.
-  </p>
-</section>
+      <div>
+        <h1>BEEKAY</h1>
+        <p>SMART AUDIO MONITOR</p>
+      </div>
 
-<section class="card">
-  <div class="card-title">
-    <h3>Choose device role</h3>
-    <span class="small-label">STEP 01</span>
-  </div>
+      <span class="badge">PROTOTYPE</span>
+    </header>
 
-  <div class="roles">
-    <button class="role active" id="roomRole" type="button">
-      <span class="icon">🎙️</span>
-      <strong>Room Device</strong>
-      <small>Audio source</small>
-    </button>
-
-    <button class="role" id="listenerRole" type="button">
-      <span class="icon">🎧</span>
-      <strong>Listener Device</strong>
-      <small>Audio receiver</small>
-    </button>
-  </div>
-</section>
-
-<section class="card">
-  <div class="card-title">
-    <h3>Device status</h3>
-    <span class="small-label">STEP 02</span>
-  </div>
-
-  <div class="status-box">
-    <div class="status-icon" id="statusIcon">📱</div>
-
-    <div class="status-info">
-      <strong id="deviceTitle">Room Device Selected</strong>
-      <p id="deviceDescription">
-        This device is selected as the audio source.
-        No audio is being transmitted.
+    <section class="welcome">
+      <h2>Your room,<br><span>connected securely.</span></h2>
+      <p>
+        A prototype for exploring transparent, consent-based
+        audio connections between compatible devices.
       </p>
+    </section>
+
+    <section class="card">
+      <div class="card-title">
+        <h3>Choose device role</h3>
+        <span class="small-label">STEP 01</span>
+      </div>
+
+      <div class="roles">
+        <button class="role active" id="roomRole" type="button">
+          <span class="icon">🎙️</span>
+          <strong>Room Device</strong>
+          <small>Audio source</small>
+        </button>
+
+        <button class="role" id="listenerRole" type="button">
+          <span class="icon">🎧</span>
+          <strong>Listener Device</strong>
+          <small>Call participant</small>
+        </button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-title">
+        <h3>Device status</h3>
+        <span class="small-label">STEP 02</span>
+      </div>
+
+      <div class="status-box">
+        <div class="status-icon" id="statusIcon">🎙️</div>
+
+        <div class="status-info">
+          <strong id="deviceTitle">Room Device Selected</strong>
+          <p id="deviceDescription">
+            This device is selected as the audio source.
+            No audio is being transmitted.
+          </p>
+        </div>
+
+        <span class="dot" id="statusDot"></span>
+      </div>
+
+      <button class="button" id="checkButton" type="button">
+        Check Browser Support
+      </button>
+
+      <button class="button secondary" id="resetButton" type="button">
+        Reset Device Role
+      </button>
+    </section>
+
+    <section class="card">
+      <div class="card-title">
+        <h3>🎙️ Microphone Test</h3>
+        <span class="small-label">AUDIO TEST</span>
+      </div>
+
+      <div class="status-box">
+        <div class="status-icon">🎤</div>
+
+        <div class="status-info">
+          <strong id="micStatus">Microphone not started</strong>
+          <p id="micDescription">
+            Record your own voice and play it back locally.
+          </p>
+        </div>
+      </div>
+
+      <button class="button" id="startMic" type="button">
+        Start Microphone Test
+      </button>
+
+      <button class="button secondary" id="stopMic" type="button" disabled>
+        Stop Recording
+      </button>
+
+      <audio
+        id="audioPlayback"
+        controls
+        playsinline
+        style="display:none;width:100%;margin-top:18px"
+      ></audio>
+
+      <p style="color:var(--muted);font-size:12px;line-height:1.7;margin-top:14px">
+        Privacy: Recording starts only after you press the button
+        and grant microphone permission. Use your own voice for this test.
+        Audio is processed locally and is not sent to another phone.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="card-title">
+        <h3>Project steps</h3>
+        <span class="small-label">ROADMAP</span>
+      </div>
+
+      <ul class="steps">
+        <li>
+          <span class="step-number">1</span>
+          <span><strong>Interface</strong><br>
+            Dashboard design and device-role selection.</span>
+        </li>
+
+        <li>
+          <span class="step-number">2</span>
+          <span><strong>Audio permissions</strong><br>
+            Transparent microphone access and local testing.</span>
+        </li>
+
+        <li>
+          <span class="step-number">3</span>
+          <span><strong>Secure connection</strong><br>
+            Design authenticated communication between participants.</span>
+        </li>
+
+        <li>
+          <span class="step-number">4</span>
+          <span><strong>Remote testing</strong><br>
+            Test a call between devices over mobile data.</span>
+        </li>
+      </ul>
+    </section>
+
+    <div class="notice">
+      <strong>🔒 Privacy notice</strong>
+      This prototype records only when the user starts the microphone
+      test and grants permission. It does not transmit audio.
+      Any future live audio feature must clearly show when the microphone
+      is active and require the knowledge and consent of everyone
+      participating in the call.
     </div>
 
-    <span class="dot" id="statusDot"></span>
-  </div>
+    <footer>
+      BEEKAY SMART AUDIO MONITOR<br>
+      Version 1.1 — Interface Prototype<br>
+      Built for learning and responsible development.
+    </footer>
 
-  <button class="button" id="checkButton" type="button">
-    Check Browser Support
-  </button>
+  </main>
 
-  <button class="button secondary" id="resetButton" type="button">
-    Reset Device Role
-  </button>
-</section>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<<section class="card">
-  <div class="card-title">
-    <h3>🎙️ Microphone Test</h3>
-    <span class="small-label">AUDIO TEST</span>
-  </div>  <div class="status-box">
-    <div class="status-icon">🎤</div>
-    <div class="status-info">
-      <strong id="micStatus">Microphone not started</strong>
-      <p id="micDescription">
-        Record your own voice and play it back locally.
-      </p>
-    </div>
-  </div>  <button class="button" id="startMic" type="button">
-    Start Microphone Test
-  </button>  <button class="button secondary" id="stopMic" type="button" disabled>
-    Stop Recording
-  </button><audio id="audioPlayback" controls style="display:none;width:100%;margin-top:18px"></audio>
-
-  <p style="color:var(--muted);font-size:12px;line-height:1.7;margin-top:14px">
-    Privacy: Recording starts only after you press the button and grant
-    microphone permission. Use your own voice for this test.
-  </p>
-</section>
-
-  <ul class="steps">
-    <li>
-      <span class="step-number">1</span>
-      <span><strong>Interface</strong><br>Dashboard design and device-role selection.</span>
-    </li>
-
-    <li>
-      <span class="step-number">2</span>
-      <span><strong>Audio permissions</strong><br>Plan a transparent, consent-based audio test.</span>
-    </li>
-
-    <li>
-      <span class="step-number">3</span>
-      <span><strong>Secure connection</strong><br>Design authenticated communication between devices.</span>
-    </li>
-
-    <li>
-      <span class="step-number">4</span>
-      <span><strong>Remote testing</strong><br>Test connectivity over mobile data.</span>
-    </li>
-  </ul>
-</section>
-
-<div class="notice">
-  <strong>🔒 Privacy notice</strong>
-  This page does not record or transmit audio.
-  Any future audio feature should clearly indicate when
-  the microphone is active and be used with the knowledge
-  and consent of everyone whose conversations may be captured.
-</div>
-
-<footer>
-  BEEKAY SMART AUDIO MONITOR<br>
-  Version 1.0 — Interface Prototype<br>
-  Built for learning and responsible development.
-</footer>
-
-  </main>  <div class="toast" id="toast" role="status" aria-live="polite"></div>  <script>
+  <script>
     const roomRole = document.getElementById("roomRole");
     const listenerRole = document.getElementById("listenerRole");
     const deviceTitle = document.getElementById("deviceTitle");
@@ -477,8 +516,18 @@
     const resetButton = document.getElementById("resetButton");
     const toast = document.getElementById("toast");
 
+    const startMicButton = document.getElementById("startMic");
+    const stopMicButton = document.getElementById("stopMic");
+    const micStatus = document.getElementById("micStatus");
+    const micDescription = document.getElementById("micDescription");
+    const audioPlayback = document.getElementById("audioPlayback");
+
     let currentRole = "room";
     let toastTimer;
+    let micStream = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let playbackUrl = null;
 
     function showToast(message) {
       toast.textContent = message;
@@ -488,7 +537,7 @@
 
       toastTimer = setTimeout(() => {
         toast.classList.remove("show");
-      }, 3000);
+      }, 3500);
     }
 
     function selectRole(role) {
@@ -506,7 +555,7 @@
         statusIcon.textContent = "🎧";
         deviceTitle.textContent = "Listener Device Selected";
         deviceDescription.textContent =
-          "This device is selected to receive audio. No remote connection is active.";
+          "This device is selected as a call participant. No remote connection is active.";
       }
 
       statusDot.style.background = "#f4bd4f";
@@ -518,55 +567,48 @@
       );
     }
 
-    roomRole.addEventListener("click", () => {
-      selectRole("room");
-    });
-
-    listenerRole.addEventListener("click", () => {
-      selectRole("listener");
-    });
+    roomRole.addEventListener("click", () => selectRole("room"));
+    listenerRole.addEventListener("click", () => selectRole("listener"));
 
     checkButton.addEventListener("click", () => {
       const secureContext = window.isSecureContext;
-      const mediaSupported =
-        !!(navigator.mediaDevices &&
-           navigator.mediaDevices.getUserMedia);
-
+      const mediaSupported = !!(
+        navigator.mediaDevices &&
+        navigator.mediaDevices.getUserMedia
+      );
+      const recorderSupported = typeof window.MediaRecorder !== "undefined";
       const online = navigator.onLine;
 
       let message = "Browser check complete. ";
-
       message += secureContext
-        ? "Secure context: available. "
-        : "Secure context: unavailable. ";
-
+        ? "Secure context available. "
+        : "Secure context unavailable. ";
       message += mediaSupported
-        ? "Microphone API: supported by this browser. "
-        : "Microphone API: unavailable in this context. ";
-
+        ? "Microphone API supported. "
+        : "Microphone API unavailable. ";
+      message += recorderSupported
+        ? "Local recording supported. "
+        : "Local recording unsupported. ";
       message += online
-        ? "Browser reports an internet connection."
-        : "Browser reports offline status.";
-
-      showToast(message);
+        ? "Browser reports online."
+        : "Browser reports offline.";
 
       deviceDescription.textContent =
-        "Browser checked. This prototype still has no audio transmission or remote connection.";
+        "Browser check complete. This prototype has no remote audio connection.";
 
       console.log({
         selectedRole: currentRole,
-        secureContext: secureContext,
+        secureContext,
         microphoneApiSupported: mediaSupported,
+        mediaRecorderSupported: recorderSupported,
         browserReportsOnline: online
       });
+
+      showToast(message);
     });
 
     resetButton.addEventListener("click", () => {
       selectRole("room");
-
-      deviceDescription.textContent =
-        "This device is selected as the audio source. No audio is being transmitted.";
-
       showToast("Device role reset.");
     });
 
@@ -577,114 +619,142 @@
     window.addEventListener("offline", () => {
       showToast("Your browser reports that you are offline.");
     });
-    const startMicButton = document.getElementById("startMic");
-const stopMicButton = document.getElementById("stopMic");
-const micStatus = document.getElementById("micStatus");
-const micDescription = document.getElementById("micDescription");
-const audioPlayback = document.getElementById("audioPlayback");
 
-let micStream = null;
-let mediaRecorder = null;
-let audioChunks = [];
+    function stopMicrophoneTracks() {
+      if (micStream) {
+        micStream.getTracks().forEach(track => track.stop());
+        micStream = null;
+      }
+    }
 
-startMicButton.addEventListener("click", async () => {
-if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
-micStatus.textContent = "Microphone unavailable";
-micDescription.textContent =
-"Open the page in a browser that supports microphone access, using HTTPS or localhost.";
-return;
-}
+    function releasePlaybackUrl() {
+      if (playbackUrl) {
+        URL.revokeObjectURL(playbackUrl);
+        playbackUrl = null;
+      }
+    }
 
-startMicButton.disabled = true;
-micStatus.textContent = "Requesting permission...";
-micDescription.textContent =
-"Allow microphone access if your browser asks.";
+    function resetMicButtons() {
+      startMicButton.disabled = false;
+      stopMicButton.disabled = true;
+    }
 
-try {
-micStream = await navigator.mediaDevices.getUserMedia({
-audio: true
-});
+    startMicButton.addEventListener("click", async () => {
+      if (
+        !navigator.mediaDevices?.getUserMedia ||
+        !window.MediaRecorder
+      ) {
+        micStatus.textContent = "Microphone unavailable";
+        micDescription.textContent =
+          "Open this page in a browser supporting microphone access and recording over HTTPS.";
+        showToast("This browser cannot run the microphone test.");
+        return;
+      }
 
-audioChunks = [];
+      startMicButton.disabled = true;
+      stopMicButton.disabled = true;
+      micStatus.textContent = "Requesting permission...";
+      micDescription.textContent =
+        "Allow microphone access if your browser asks.";
 
-const options = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
-  ? { mimeType: "audio/webm;codecs=opus" }
-  : {};
+      try {
+        micStream = await navigator.mediaDevices.getUserMedia({
+          audio: true
+        });
 
-mediaRecorder = new MediaRecorder(micStream, options);
+        audioChunks = [];
 
-mediaRecorder.addEventListener("dataavailable", event => {
-  if (event.data.size > 0) {
-    audioChunks.push(event.data);
-  }
-});
+        const mimeType = MediaRecorder.isTypeSupported(
+          "audio/webm;codecs=opus"
+        )
+          ? "audio/webm;codecs=opus"
+          : "";
 
-mediaRecorder.addEventListener("stop", () => {
-  const audioBlob = new Blob(audioChunks, {
-    type: mediaRecorder.mimeType || "audio/webm"
-  });
+        mediaRecorder = mimeType
+          ? new MediaRecorder(micStream, { mimeType })
+          : new MediaRecorder(micStream);
 
-  if (audioPlayback.src) {
-    URL.revokeObjectURL(audioPlayback.src);
-  }
+        mediaRecorder.addEventListener("dataavailable", event => {
+          if (event.data.size > 0) {
+            audioChunks.push(event.data);
+          }
+        });
 
-  audioPlayback.src = URL.createObjectURL(audioBlob);
-  audioPlayback.style.display = "block";
+        mediaRecorder.addEventListener("stop", () => {
+          stopMicrophoneTracks();
 
-  micStatus.textContent = "Recording ready";
-  micDescription.textContent =
-    "Your audio is ready for local playback. It has not been transmitted to another phone.";
+          if (audioChunks.length > 0) {
+            const audioBlob = new Blob(audioChunks, {
+              type: mediaRecorder.mimeType || "audio/webm"
+            });
 
-  startMicButton.disabled = false;
-  stopMicButton.disabled = true;
-});
+            releasePlaybackUrl();
+            playbackUrl = URL.createObjectURL(audioBlob);
+            audioPlayback.src = playbackUrl;
+            audioPlayback.style.display = "block";
 
-mediaRecorder.start();
+            micStatus.textContent = "Recording ready";
+            micDescription.textContent =
+              "Your recording is ready for local playback. It has not been sent to another phone.";
+          } else {
+            micStatus.textContent = "No audio recorded";
+            micDescription.textContent =
+              "Try starting the microphone test and speaking clearly.";
+          }
 
-micStatus.textContent = "Microphone active";
-micDescription.textContent =
-  "Recording your voice on this device. Press Stop Recording when finished.";
+          resetMicButtons();
+        }, { once: true });
 
-stopMicButton.disabled = false;
-showToast("Microphone is active. Record your own voice.");
+        mediaRecorder.start();
 
-} catch (error) {
-micStatus.textContent = "Microphone access failed";
-micDescription.textContent =
-error.name === "NotAllowedError"
-? "Microphone permission was denied. Check your browser permissions."
-: "Could not start the microphone. Check browser support and device settings.";
+        micStatus.textContent = "Microphone active";
+        micDescription.textContent =
+          "Your voice is being recorded on this device. Press Stop Recording when finished.";
 
-startMicButton.disabled = false;
+        stopMicButton.disabled = false;
+        showToast("Microphone active. Record your own voice.");
+      } catch (error) {
+        stopMicrophoneTracks();
+        resetMicButtons();
 
-}
-});
+        micStatus.textContent = "Microphone access failed";
 
-stopMicButton.addEventListener("click", () => {
-if (mediaRecorder && mediaRecorder.state !== "inactive") {
-mediaRecorder.stop();
-}
+        if (error.name === "NotAllowedError" ||
+            error.name === "PermissionDeniedError") {
+          micDescription.textContent =
+            "Microphone permission was denied. Check your browser permissions and try again.";
+        } else {
+          micDescription.textContent =
+            "Could not start the microphone. Check browser support and device settings.";
+        }
 
-if (micStream) {
-micStream.getTracks().forEach(track => track.stop());
-micStream = null;
-}
+        showToast("Unable to start the microphone test.");
+        console.error("Microphone test error:", error);
+      }
+    });
 
-micStatus.textContent = "Processing audio...";
-micDescription.textContent = "Preparing your recording for playback.";
+    stopMicButton.addEventListener("click", () => {
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        micStatus.textContent = "Processing audio...";
+        micDescription.textContent =
+          "Stopping the microphone and preparing local playback.";
 
-stopMicButton.disabled = true;
-});
+        stopMicButton.disabled = true;
+        mediaRecorder.stop();
+      } else {
+        stopMicrophoneTracks();
+        resetMicButtons();
+      }
+    });
 
-window.addEventListener("pagehide", () => {
-if (mediaRecorder && mediaRecorder.state !== "inactive") {
-mediaRecorder.stop();
-}
+    window.addEventListener("pagehide", () => {
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+      }
 
-if (micStream) {
-micStream.getTracks().forEach(track => track.stop());
-}
-});
+      stopMicrophoneTracks();
+      releasePlaybackUrl();
+    });
   </script>
-  </body>
-</html>
+</body>
+        </html>
