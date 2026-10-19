@@ -1,0 +1,690 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080d18">
+  <title>BEEKAY Smart Audio Monitor</title>  <style>
+    :root {
+      --bg: #080d18;
+      --panel: #111a2b;
+      --panel2: #18243a;
+      --text: #f5f7ff;
+      --muted: #99a8c0;
+      --blue: #4785ff;
+      --green: #32d6a0;
+      --red: #ff647c;
+      --border: #263650;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 22px 15px;
+      background:
+        radial-gradient(circle at top right, #162b50 0, transparent 35%),
+        var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #4785ff, #8058ed);
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 8px 25px #4785ff35;
+    }
+
+    header h1 {
+      font-size: 19px;
+      letter-spacing: 0.5px;
+    }
+
+    header p {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .badge {
+      margin-left: auto;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--green);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .welcome {
+      margin-bottom: 22px;
+    }
+
+    .welcome h2 {
+      font-size: 27px;
+      line-height: 1.3;
+    }
+
+    .welcome h2 span {
+      color: var(--blue);
+    }
+
+    .welcome p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .card {
+      padding: 20px;
+      margin-bottom: 17px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: linear-gradient(145deg, #141f32, #0f1727);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 17px;
+    }
+
+    .card-title h3 {
+      font-size: 16px;
+    }
+
+    .small-label {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .roles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .role {
+      padding: 16px 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      text-align: center;
+      transition: 0.2s;
+    }
+
+    .role.active {
+      border-color: var(--blue);
+      background: #1b3153;
+      box-shadow: inset 0 0 0 1px var(--blue);
+    }
+
+    .role .icon {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 27px;
+    }
+
+    .role strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .role small {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .status-box {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 15px;
+      border-radius: 14px;
+      background: var(--bg);
+    }
+
+    .status-icon {
+      display: grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      flex-shrink: 0;
+      border-radius: 13px;
+      background: #4785ff20;
+      font-size: 22px;
+    }
+
+    .status-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .status-info strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .status-info p {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: #f4bd4f;
+    }
+
+    .notice {
+      padding: 14px;
+      border: 1px solid #8b713b;
+      border-radius: 13px;
+      background: #3b301a55;
+      color: #f8d88b;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .notice strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 13px;
+      background: var(--blue);
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .button:active {
+      transform: scale(0.98);
+    }
+
+    .button.secondary {
+      border: 1px solid var(--border);
+      background: var(--panel2);
+    }
+
+    .button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .steps {
+      list-style: none;
+    }
+
+    .steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .steps li:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+      border-radius: 9px;
+      background: #4785ff20;
+      color: #78a7ff;
+      font-weight: bold;
+    }
+
+    footer {
+      padding: 15px 0 5px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 25px;
+      z-index: 10;
+      width: calc(100% - 30px);
+      max-width: 420px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #1a2940;
+      color: white;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 15px);
+      transition: 0.25s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 360px) {
+      .welcome h2 {
+        font-size: 23px;
+      }
+
+      .card {
+        padding: 15px;
+      }
+
+      header h1 {
+        font-size: 16px;
+      }
+
+      .badge {
+        font-size: 10px;
+      }
+    }
+  </style></head><body>
+  <main class="container"><header>
+  <div class="logo">BK</div>
+
+  <div>
+    <h1>BEEKAY</h1>
+    <p>SMART AUDIO MONITOR</p>
+  </div>
+
+  <span class="badge">PROTOTYPE</span>
+</header>
+
+<section class="welcome">
+  <h2>Your room,<br><span>connected securely.</span></h2>
+  <p>
+    A prototype for exploring remote audio connections
+    between compatible devices.
+  </p>
+</section>
+
+<section class="card">
+  <div class="card-title">
+    <h3>Choose device role</h3>
+    <span class="small-label">STEP 01</span>
+  </div>
+
+  <div class="roles">
+    <button class="role active" id="roomRole" type="button">
+      <span class="icon">🎙️</span>
+      <strong>Room Device</strong>
+      <small>Audio source</small>
+    </button>
+
+    <button class="role" id="listenerRole" type="button">
+      <span class="icon">🎧</span>
+      <strong>Listener Device</strong>
+      <small>Audio receiver</small>
+    </button>
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-title">
+    <h3>Device status</h3>
+    <span class="small-label">STEP 02</span>
+  </div>
+
+  <div class="status-box">
+    <div class="status-icon" id="statusIcon">📱</div>
+
+    <div class="status-info">
+      <strong id="deviceTitle">Room Device Selected</strong>
+      <p id="deviceDescription">
+        This device is selected as the audio source.
+        No audio is being transmitted.
+      </p>
+    </div>
+
+    <span class="dot" id="statusDot"></span>
+  </div>
+
+  <button class="button" id="checkButton" type="button">
+    Check Browser Support
+  </button>
+
+  <button class="button secondary" id="resetButton" type="button">
+    Reset Device Role
+  </button>
+</section>
+
+<<section class="card">
+  <div class="card-title">
+    <h3>🎙️ Microphone Test</h3>
+    <span class="small-label">AUDIO TEST</span>
+  </div>  <div class="status-box">
+    <div class="status-icon">🎤</div>
+    <div class="status-info">
+      <strong id="micStatus">Microphone not started</strong>
+      <p id="micDescription">
+        Record your own voice and play it back locally.
+      </p>
+    </div>
+  </div>  <button class="button" id="startMic" type="button">
+    Start Microphone Test
+  </button>  <button class="button secondary" id="stopMic" type="button" disabled>
+    Stop Recording
+  </button><audio id="audioPlayback" controls style="display:none;width:100%;margin-top:18px"></audio>
+
+  <p style="color:var(--muted);font-size:12px;line-height:1.7;margin-top:14px">
+    Privacy: Recording starts only after you press the button and grant
+    microphone permission. Use your own voice for this test.
+  </p>
+</section>
+
+  <ul class="steps">
+    <li>
+      <span class="step-number">1</span>
+      <span><strong>Interface</strong><br>Dashboard design and device-role selection.</span>
+    </li>
+
+    <li>
+      <span class="step-number">2</span>
+      <span><strong>Audio permissions</strong><br>Plan a transparent, consent-based audio test.</span>
+    </li>
+
+    <li>
+      <span class="step-number">3</span>
+      <span><strong>Secure connection</strong><br>Design authenticated communication between devices.</span>
+    </li>
+
+    <li>
+      <span class="step-number">4</span>
+      <span><strong>Remote testing</strong><br>Test connectivity over mobile data.</span>
+    </li>
+  </ul>
+</section>
+
+<div class="notice">
+  <strong>🔒 Privacy notice</strong>
+  This page does not record or transmit audio.
+  Any future audio feature should clearly indicate when
+  the microphone is active and be used with the knowledge
+  and consent of everyone whose conversations may be captured.
+</div>
+
+<footer>
+  BEEKAY SMART AUDIO MONITOR<br>
+  Version 1.0 — Interface Prototype<br>
+  Built for learning and responsible development.
+</footer>
+
+  </main>  <div class="toast" id="toast" role="status" aria-live="polite"></div>  <script>
+    const roomRole = document.getElementById("roomRole");
+    const listenerRole = document.getElementById("listenerRole");
+    const deviceTitle = document.getElementById("deviceTitle");
+    const deviceDescription = document.getElementById("deviceDescription");
+    const statusIcon = document.getElementById("statusIcon");
+    const statusDot = document.getElementById("statusDot");
+    const checkButton = document.getElementById("checkButton");
+    const resetButton = document.getElementById("resetButton");
+    const toast = document.getElementById("toast");
+
+    let currentRole = "room";
+    let toastTimer;
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      clearTimeout(toastTimer);
+
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
+    function selectRole(role) {
+      currentRole = role;
+
+      roomRole.classList.toggle("active", role === "room");
+      listenerRole.classList.toggle("active", role === "listener");
+
+      if (role === "room") {
+        statusIcon.textContent = "🎙️";
+        deviceTitle.textContent = "Room Device Selected";
+        deviceDescription.textContent =
+          "This device is selected as the audio source. No audio is being transmitted.";
+      } else {
+        statusIcon.textContent = "🎧";
+        deviceTitle.textContent = "Listener Device Selected";
+        deviceDescription.textContent =
+          "This device is selected to receive audio. No remote connection is active.";
+      }
+
+      statusDot.style.background = "#f4bd4f";
+
+      showToast(
+        role === "room"
+          ? "Room Device role selected."
+          : "Listener Device role selected."
+      );
+    }
+
+    roomRole.addEventListener("click", () => {
+      selectRole("room");
+    });
+
+    listenerRole.addEventListener("click", () => {
+      selectRole("listener");
+    });
+
+    checkButton.addEventListener("click", () => {
+      const secureContext = window.isSecureContext;
+      const mediaSupported =
+        !!(navigator.mediaDevices &&
+           navigator.mediaDevices.getUserMedia);
+
+      const online = navigator.onLine;
+
+      let message = "Browser check complete. ";
+
+      message += secureContext
+        ? "Secure context: available. "
+        : "Secure context: unavailable. ";
+
+      message += mediaSupported
+        ? "Microphone API: supported by this browser. "
+        : "Microphone API: unavailable in this context. ";
+
+      message += online
+        ? "Browser reports an internet connection."
+        : "Browser reports offline status.";
+
+      showToast(message);
+
+      deviceDescription.textContent =
+        "Browser checked. This prototype still has no audio transmission or remote connection.";
+
+      console.log({
+        selectedRole: currentRole,
+        secureContext: secureContext,
+        microphoneApiSupported: mediaSupported,
+        browserReportsOnline: online
+      });
+    });
+
+    resetButton.addEventListener("click", () => {
+      selectRole("room");
+
+      deviceDescription.textContent =
+        "This device is selected as the audio source. No audio is being transmitted.";
+
+      showToast("Device role reset.");
+    });
+
+    window.addEventListener("online", () => {
+      showToast("Your browser reports that you are online.");
+    });
+
+    window.addEventListener("offline", () => {
+      showToast("Your browser reports that you are offline.");
+    });
+    const startMicButton = document.getElementById("startMic");
+const stopMicButton = document.getElementById("stopMic");
+const micStatus = document.getElementById("micStatus");
+const micDescription = document.getElementById("micDescription");
+const audioPlayback = document.getElementById("audioPlayback");
+
+let micStream = null;
+let mediaRecorder = null;
+let audioChunks = [];
+
+startMicButton.addEventListener("click", async () => {
+if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+micStatus.textContent = "Microphone unavailable";
+micDescription.textContent =
+"Open the page in a browser that supports microphone access, using HTTPS or localhost.";
+return;
+}
+
+startMicButton.disabled = true;
+micStatus.textContent = "Requesting permission...";
+micDescription.textContent =
+"Allow microphone access if your browser asks.";
+
+try {
+micStream = await navigator.mediaDevices.getUserMedia({
+audio: true
+});
+
+audioChunks = [];
+
+const options = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+  ? { mimeType: "audio/webm;codecs=opus" }
+  : {};
+
+mediaRecorder = new MediaRecorder(micStream, options);
+
+mediaRecorder.addEventListener("dataavailable", event => {
+  if (event.data.size > 0) {
+    audioChunks.push(event.data);
+  }
+});
+
+mediaRecorder.addEventListener("stop", () => {
+  const audioBlob = new Blob(audioChunks, {
+    type: mediaRecorder.mimeType || "audio/webm"
+  });
+
+  if (audioPlayback.src) {
+    URL.revokeObjectURL(audioPlayback.src);
+  }
+
+  audioPlayback.src = URL.createObjectURL(audioBlob);
+  audioPlayback.style.display = "block";
+
+  micStatus.textContent = "Recording ready";
+  micDescription.textContent =
+    "Your audio is ready for local playback. It has not been transmitted to another phone.";
+
+  startMicButton.disabled = false;
+  stopMicButton.disabled = true;
+});
+
+mediaRecorder.start();
+
+micStatus.textContent = "Microphone active";
+micDescription.textContent =
+  "Recording your voice on this device. Press Stop Recording when finished.";
+
+stopMicButton.disabled = false;
+showToast("Microphone is active. Record your own voice.");
+
+} catch (error) {
+micStatus.textContent = "Microphone access failed";
+micDescription.textContent =
+error.name === "NotAllowedError"
+? "Microphone permission was denied. Check your browser permissions."
+: "Could not start the microphone. Check browser support and device settings.";
+
+startMicButton.disabled = false;
+
+}
+});
+
+stopMicButton.addEventListener("click", () => {
+if (mediaRecorder && mediaRecorder.state !== "inactive") {
+mediaRecorder.stop();
+}
+
+if (micStream) {
+micStream.getTracks().forEach(track => track.stop());
+micStream = null;
+}
+
+micStatus.textContent = "Processing audio...";
+micDescription.textContent = "Preparing your recording for playback.";
+
+stopMicButton.disabled = true;
+});
+
+window.addEventListener("pagehide", () => {
+if (mediaRecorder && mediaRecorder.state !== "inactive") {
+mediaRecorder.stop();
+}
+
+if (micStream) {
+micStream.getTracks().forEach(track => track.stop());
+}
+});
+  </script>
+  </body>
+</html>
