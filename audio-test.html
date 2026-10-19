@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080d18">
-  <title>BEEKAY Audio Call Test</title>
+  <title>BEEKAY Smart Audio Call</title>
 
   <style>
     :root {
@@ -18,9 +18,7 @@
       --border: #263650;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -36,17 +34,14 @@
       margin: auto;
     }
 
-    header {
-      margin-bottom: 25px;
-    }
+    header { margin-bottom: 25px; }
 
     header h1 {
       font-size: 23px;
       margin-bottom: 8px;
     }
 
-    header p,
-    .muted {
+    header p, .muted {
       color: var(--muted);
       font-size: 13px;
       line-height: 1.7;
@@ -73,7 +68,7 @@
       border-radius: 10px;
       background: var(--bg);
       color: var(--text);
-      font-size: 15px;
+      font-size: 14px;
     }
 
     button {
@@ -94,14 +89,9 @@
       border: 1px solid var(--border);
     }
 
-    button.danger {
-      background: #8f293c;
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    button.danger { background: #8f293c; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .hidden { display: none !important; }
 
     .status {
       padding: 13px;
@@ -122,13 +112,14 @@
       line-height: 1.7;
     }
 
+    .brand {
+      color: var(--green);
+      font-weight: bold;
+    }
+
     audio {
       width: 100%;
       margin-top: 15px;
-    }
-
-    .hidden {
-      display: none;
     }
   </style>
 </head>
@@ -136,42 +127,47 @@
 <body>
 <main>
   <header>
-    <h1>🎙️ BEEKAY Audio Call Test</h1>
-    <p>A separate, consent-based test for a live audio call between two devices.</p>
+    <h1>🎙️ BEEKAY <span class="brand">SMART AUDIO</span></h1>
+    <p>Private, consent-based live audio calls between people who agree to connect.</p>
   </header>
 
   <section class="card">
     <h3>1. Connect to the service</h3>
     <p class="muted">
-      Each participant opens this page on their own phone.
-      Wait until a connection ID appears.
+      Connect first to receive your temporary calling ID.
+      Keep this page open while using the call.
     </p>
 
     <div class="status" id="serviceStatus" role="status">
-      Not connected to the calling service.
+      Not connected.
     </div>
 
-    <label for="myId">Your connection ID</label>
-    <input id="myId" readonly placeholder="Waiting for connection ID">
+    <label for="myId">Your calling ID</label>
+    <input id="myId" readonly placeholder="Your ID will appear here">
 
     <button id="startService">Connect to Calling Service</button>
+    <button id="shareButton" class="secondary" disabled>
+      Copy / Share Call Invitation
+    </button>
   </section>
 
   <section class="card">
-    <h3>2. Start or answer a call</h3>
+    <h3>2. Join or request a call</h3>
 
     <p class="muted">
-      Share your connection ID only with the person you intend to call.
-      The other participant must accept the incoming call.
+      Open an invitation from someone you know, or enter their calling ID.
+      The recipient must accept the call.
     </p>
 
-    <label for="remoteId">Other participant's ID</label>
-    <input id="remoteId" placeholder="Paste their connection ID">
+    <label for="remoteId">Other participant's calling ID</label>
+    <input id="remoteId" placeholder="Paste their calling ID">
 
     <button id="callButton" disabled>Request Audio Call</button>
+
     <button id="acceptButton" class="secondary hidden">
       Accept Incoming Call
     </button>
+
     <button id="declineButton" class="secondary hidden">
       Decline Incoming Call
     </button>
@@ -181,7 +177,7 @@
     <h3>3. Call controls</h3>
 
     <div class="status" id="callStatus" role="status" aria-live="polite">
-      No call active. Your microphone is off.
+      No call active. Microphone is off.
     </div>
 
     <button id="muteButton" class="secondary" disabled>
@@ -196,35 +192,38 @@
   </section>
 
   <div class="privacy">
-    <strong>🔒 Privacy notice</strong><br>
-    This page requests microphone access only when you initiate or accept
-    a call. The other participant must accept before audio is shared.
-    A visible call status and End Call button are provided.
-    Do not use this page to listen to people without their knowledge
-    and agreement. No recording feature is included.
+    <strong>🔒 Privacy matters</strong><br>
+    Microphone access requires permission. Calls require participants to
+    knowingly agree, and incoming calls must be accepted. The microphone
+    can be muted, and either participant can end the call. No recording
+    feature is provided. Only share invitations with intended participants.
   </div>
 </main>
 
 <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 
 <script>
-  const serviceStatus = document.getElementById("serviceStatus");
-  const myId = document.getElementById("myId");
-  const remoteId = document.getElementById("remoteId");
-  const startService = document.getElementById("startService");
-  const callButton = document.getElementById("callButton");
-  const acceptButton = document.getElementById("acceptButton");
-  const declineButton = document.getElementById("declineButton");
-  const callStatus = document.getElementById("callStatus");
-  const muteButton = document.getElementById("muteButton");
-  const hangupButton = document.getElementById("hangupButton");
-  const remoteAudio = document.getElementById("remoteAudio");
+  const $ = id => document.getElementById(id);
+
+  const serviceStatus = $("serviceStatus");
+  const myId = $("myId");
+  const remoteId = $("remoteId");
+  const startService = $("startService");
+  const shareButton = $("shareButton");
+  const callButton = $("callButton");
+  const acceptButton = $("acceptButton");
+  const declineButton = $("declineButton");
+  const callStatus = $("callStatus");
+  const muteButton = $("muteButton");
+  const hangupButton = $("hangupButton");
+  const remoteAudio = $("remoteAudio");
 
   let peer = null;
   let activeCall = null;
   let incomingCall = null;
   let localStream = null;
   let muted = false;
+  let startingCall = false;
 
   function setStatus(message) {
     callStatus.textContent = message;
@@ -237,10 +236,12 @@
 
   async function getMicrophone() {
     if (!navigator.mediaDevices?.getUserMedia) {
-      throw new Error("Microphone access is unavailable. Use HTTPS and a supported browser.");
+      throw new Error(
+        "Microphone access is unavailable. Use HTTPS and a supported browser."
+      );
     }
 
-    return await navigator.mediaDevices.getUserMedia({
+    return navigator.mediaDevices.getUserMedia({
       audio: true,
       video: false
     });
@@ -258,21 +259,21 @@
   }
 
   function resetCallState(message) {
-    if (activeCall) {
-      const oldCall = activeCall;
-      activeCall = null;
-      oldCall.close();
-    }
+    const oldActive = activeCall;
+    const oldIncoming = incomingCall;
 
-    if (incomingCall) {
-      const oldIncoming = incomingCall;
-      incomingCall = null;
-      oldIncoming.close();
-    }
+    activeCall = null;
+    incomingCall = null;
+    startingCall = false;
+
+    if (oldActive) oldActive.close();
+    if (oldIncoming) oldIncoming.close();
 
     stopLocalMicrophone();
 
+    remoteAudio.pause();
     remoteAudio.srcObject = null;
+
     hangupButton.disabled = true;
     callButton.disabled = !peer || peer.destroyed;
     showIncomingControls(false);
@@ -280,32 +281,81 @@
     setStatus(message);
   }
 
+  function attachCallHandlers(call) {
+    call.on("stream", stream => {
+      if (activeCall !== call) return;
+
+      remoteAudio.srcObject = stream;
+
+      remoteAudio.play().then(() => {
+        setStatus("Live audio connected. Use Mute or End Call as needed.");
+      }).catch(() => {
+        setStatus("Audio connected. Tap Play in the audio controls.");
+      });
+    });
+
+    call.on("close", () => {
+      if (activeCall !== call) return;
+
+      activeCall = null;
+      stopLocalMicrophone();
+
+      remoteAudio.pause();
+      remoteAudio.srcObject = null;
+
+      hangupButton.disabled = true;
+      callButton.disabled = !peer || peer.destroyed;
+
+      setStatus("Call ended. Microphone is off.");
+    });
+
+    call.on("error", error => {
+      console.error(error);
+
+      if (activeCall === call) {
+        resetCallState("Call error. The call has been closed.");
+      }
+    });
+  }
+
+  function makeInvitation() {
+    if (!peer || peer.destroyed || !peer.id) {
+      throw new Error("Connect to the calling service first.");
+    }
+
+    const invitation = new URL(window.location.href);
+    invitation.searchParams.set("call", peer.id);
+
+    return invitation.href;
+  }
+
   startService.addEventListener("click", () => {
     if (peer && !peer.destroyed) {
-      serviceStatus.textContent = "Calling service is already connected.";
+      serviceStatus.textContent = "Already connected to the calling service.";
       return;
     }
 
     if (!window.Peer) {
       serviceStatus.textContent =
-        "Could not load the calling library. Check your internet connection and refresh.";
+        "Calling library could not load. Check your internet and refresh.";
       return;
     }
 
-    serviceStatus.textContent = "Connecting to calling service...";
+    serviceStatus.textContent = "Connecting...";
     startService.disabled = true;
 
     peer = new Peer();
 
     peer.on("open", id => {
       myId.value = id;
-      serviceStatus.textContent = "Ready. Share your ID with the intended participant.";
+      serviceStatus.textContent = "Connected. You can share an invitation.";
       callButton.disabled = false;
+      shareButton.disabled = false;
       startService.disabled = false;
     });
 
     peer.on("call", call => {
-      if (activeCall || incomingCall) {
+      if (activeCall || incomingCall || startingCall) {
         call.close();
         return;
       }
@@ -313,7 +363,7 @@
       incomingCall = call;
       remoteId.value = call.peer;
 
-      setStatus("Incoming call request. Accept it to share audio, or decline.");
+      setStatus("Incoming call request. Accept only if you know who is calling.");
       showIncomingControls(true);
     });
 
@@ -327,14 +377,50 @@
 
     peer.on("disconnected", () => {
       serviceStatus.textContent =
-        "Disconnected from the calling service. Existing calls may be affected.";
+        "Disconnected from the calling service. Reconnect if needed.";
     });
 
     peer.on("close", () => {
       serviceStatus.textContent = "Calling service closed.";
       callButton.disabled = true;
+      shareButton.disabled = true;
       startService.disabled = false;
     });
+
+    // If the page was opened from an invitation, fill in the caller ID.
+    const invitationId = new URLSearchParams(window.location.search).get("call");
+
+    if (invitationId) {
+      remoteId.value = invitationId;
+      setStatus(
+        "Invitation loaded. Connect to the service, then request a call if you wish."
+      );
+    }
+  });
+
+  shareButton.addEventListener("click", async () => {
+    try {
+      const link = makeInvitation();
+
+      if (navigator.share) {
+        await navigator.share({
+          title: "BEEKAY Smart Audio Call",
+          text: "Join my live audio call. Please connect and accept the call when ready.",
+          url: link
+        });
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(link);
+        serviceStatus.textContent =
+          "Invitation copied. Paste it into WhatsApp or another messaging app.";
+      } else {
+        window.prompt("Copy this call invitation:", link);
+      }
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        serviceStatus.textContent =
+          "Could not share automatically. Try copying your calling ID instead.";
+      }
+    }
   });
 
   callButton.addEventListener("click", async () => {
@@ -346,17 +432,29 @@
     }
 
     if (!destination || destination === peer.id) {
-      setStatus("Enter the other participant's valid connection ID.");
+      setStatus("Enter the other participant's valid calling ID.");
       return;
     }
 
+    if (activeCall || startingCall) {
+      setStatus("A call is already starting or active.");
+      return;
+    }
+
+    // The caller is explicitly requesting a call by pressing this button.
     callButton.disabled = true;
+    startingCall = true;
     setStatus("Requesting microphone permission...");
 
     try {
       localStream = await getMicrophone();
 
-      setStatus("Calling. Waiting for the other participant to accept...");
+      if (!startingCall) {
+        stopLocalMicrophone();
+        return;
+      }
+
+      setStatus("Call requested. Waiting for the other person to accept...");
 
       activeCall = peer.call(destination, localStream);
 
@@ -364,7 +462,9 @@
         throw new Error("Could not create the call.");
       }
 
+      startingCall = false;
       attachCallHandlers(activeCall);
+
       hangupButton.disabled = false;
       muteButton.disabled = false;
     } catch (error) {
@@ -375,14 +475,21 @@
   acceptButton.addEventListener("click", async () => {
     if (!incomingCall) return;
 
+    const requestedCall = incomingCall;
+
     acceptButton.disabled = true;
     declineButton.disabled = true;
-    setStatus("Requesting microphone permission to accept the call...");
+    setStatus("Grant microphone permission to accept the call.");
 
     try {
       localStream = await getMicrophone();
 
-      activeCall = incomingCall;
+      if (incomingCall !== requestedCall) {
+        stopLocalMicrophone();
+        return;
+      }
+
+      activeCall = requestedCall;
       incomingCall = null;
       showIncomingControls(false);
 
@@ -393,14 +500,15 @@
       muteButton.disabled = false;
       setStatus("Call accepted. Connecting audio...");
     } catch (error) {
-      if (incomingCall) {
-        incomingCall.close();
+      if (incomingCall === requestedCall) {
+        requestedCall.close();
         incomingCall = null;
       }
 
       stopLocalMicrophone();
-      setStatus("Could not accept call: " + error.message);
       showIncomingControls(false);
+
+      setStatus("Could not accept call: " + error.message);
     } finally {
       acceptButton.disabled = false;
       declineButton.disabled = false;
@@ -414,36 +522,8 @@
     }
 
     showIncomingControls(false);
-    setStatus("Incoming call declined. Microphone remains off.");
+    setStatus("Call declined. Microphone is off.");
   });
-
-  function attachCallHandlers(call) {
-    call.on("stream", stream => {
-      remoteAudio.srcObject = stream;
-
-      remoteAudio.play().then(() => {
-        setStatus("Live audio connected. Microphone activity is controlled by your device.");
-      }).catch(() => {
-        setStatus("Audio connected. Tap Play on the audio control if needed.");
-      });
-    });
-
-    call.on("close", () => {
-      if (activeCall === call) {
-        activeCall = null;
-        stopLocalMicrophone();
-        remoteAudio.srcObject = null;
-        hangupButton.disabled = true;
-        callButton.disabled = !peer || peer.destroyed;
-        setStatus("Call ended. Microphone is off.");
-      }
-    });
-
-    call.on("error", error => {
-      console.error(error);
-      resetCallState("Call error. The connection was closed.");
-    });
-  }
 
   muteButton.addEventListener("click", () => {
     if (!localStream) return;
@@ -458,9 +538,11 @@
       ? "Unmute Microphone"
       : "Mute Microphone";
 
-    setStatus(muted
-      ? "Microphone muted. The call remains connected."
-      : "Microphone active. The call remains connected.");
+    setStatus(
+      muted
+        ? "Microphone muted. Call remains connected."
+        : "Microphone active. Call remains connected."
+    );
   });
 
   hangupButton.addEventListener("click", () => {
@@ -479,4 +561,4 @@
   });
 </script>
 </body>
-  </html>
+</html>
